@@ -1,0 +1,44 @@
+name: Bump Helm Chart Version
+description: Bump a Helm Chart Version Locally
+branding:
+  icon: hard-drive
+  color: blue
+inputs:
+  app_version:
+    description: to also bump app-version
+    default: "true"
+    required: false
+  level:
+    description: patch/minor/major
+    required: true
+  chart-path:
+    description: the directory path to the specified chart (without / at the end)
+    required: true
+outputs:
+  chart:
+    description: "Chart name"    
+    value: ${{ steps.version-tag.outputs.chart }}
+  version:
+    description: "Bumped Version"     
+    value: ${{ steps.version-tag.outputs.version }}
+runs:
+  using: "composite"
+  steps:
+    - name: Install PyBump
+      run: |
+        python3 -m pip install pybump
+
+    - name: Automated Version Bump
+      run: |
+        pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
+        if [[ ${{ fromJSON(inputs.app_version) }} ]]
+        then
+          pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
+        fi        
+      shell: bash        
+
+    - name: Get New Tag
+      id: version-tag
+      run: |
+        echo "::set-output name=version::$(pybump get --file ${{ inputs.chart-path }}/Chart.yaml)" 
+        echo "::set-output name=chart::$(basename ${{ inputs.chart-path }})"
