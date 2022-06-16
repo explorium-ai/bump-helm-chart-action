@@ -18,7 +18,7 @@ outputs:
   chart:
     description: "Chart name"    
     value: ${{ steps.version-tag.outputs.chart }}
-  version:
+  bumped_version:
     description: "Bumped Version"     
     value: ${{ steps.version-bump.outputs.version }}
 runs:
@@ -33,7 +33,7 @@ runs:
       id: version-bump
       run: |
         version=$(pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }})
-        echo "::set-output name=version::$(echo '$version')" 
+        echo "::set-output name=bumped_version::$(echo $version)" 
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
           pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
