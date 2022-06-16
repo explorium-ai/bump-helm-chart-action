@@ -20,7 +20,7 @@ outputs:
     value: ${{ steps.version-tag.outputs.chart }}
   version:
     description: "Bumped Version"     
-    value: ${{ steps.version-tag.outputs.version }}
+    value: ${{ steps.version-bump.outputs.version }}
 runs:
   using: "composite"
   steps:
@@ -30,17 +30,18 @@ runs:
       shell: bash
 
     - name: Automated Version Bump
+      id: version-bump
       run: |
-        pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
+        version=$(pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }})
+        echo "::set-output name=version::$version" 
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
           pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
         fi        
       shell: bash        
 
-    - name: Get New Tag
+    - name: Output Name
       id: version-tag
       run: |
-        echo "::set-output name=version::$(pybump get --file ${{ inputs.chart-path }}/Chart.yaml)" 
         echo "::set-output name=chart::$(basename ${{ inputs.chart-path }})"
       shell: bash
