@@ -27,6 +27,7 @@ runs:
     - name: Install PyBump
       run: |
         python3 -m pip install pybump
+      shell: bash
 
     - name: Automated Version Bump
       run: |
@@ -42,3 +43,4 @@ runs:
       run: |
         echo "::set-output name=version::$(pybump get --file ${{ inputs.chart-path }}/Chart.yaml)" 
         echo "::set-output name=chart::$(basename ${{ inputs.chart-path }})"
+      shell: bash
