@@ -17,10 +17,7 @@ inputs:
 outputs:
   chart:
     description: "Chart name"    
-    value: ${{ steps.version-tag.outputs.chart }}
-  bumped_version:
-    description: "Bumped Version"     
-    value: ${{ steps.version-bump.outputs.version }}
+    value: ${{ steps.chart-name.outputs.chart }}
 runs:
   using: "composite"
   steps:
@@ -32,8 +29,7 @@ runs:
     - name: Automated Version Bump
       id: version-bump
       run: |
-        version=$(pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }})
-        echo "::set-output name=bumped_version::$(echo $version)" 
+        pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
           pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
@@ -41,7 +37,7 @@ runs:
       shell: bash        
 
     - name: Output Name
-      id: version-tag
+      id: chart-name
       run: |
         echo "::set-output name=chart::$(basename ${{ inputs.chart-path }})"
       shell: bash
