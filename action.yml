@@ -34,6 +34,7 @@ runs:
       run: |
         version=$(pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }})
         echo "::set-output name=version::$(echo $version)" 
+        pybump get --file ${{ inputs.chart-path }}/Chart.yaml
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
           pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
