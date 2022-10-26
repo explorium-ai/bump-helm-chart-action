@@ -37,14 +37,14 @@ runs:
         then
           if [[ ${{ fromJSON(inputs.add_hash) }} ]]
           then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version --auto
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --auto
           else
             pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
           fi
         else
           if [[ ${{ fromJSON(inputs.add_hash) }} ]]
           then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --auto
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --auto
           else
             pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
           fi
