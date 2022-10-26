@@ -14,6 +14,10 @@ inputs:
   chart-path:
     description: the directory path to the specified chart (without / at the end)
     required: true
+  add_hash:
+    description: to also add git commit hash as metadata
+    default: "false"
+    required: false
 outputs:
   chart:
     description: "Chart name"    
@@ -29,11 +33,22 @@ runs:
     - name: Automated Version Bump
       id: version-bump
       run: |
-        pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
-          pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
-        fi        
+          if [[ ${{ fromJSON(inputs.add_hash) }} ]]
+          then
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version --auto
+          else
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
+          fi
+        else
+          if [[ ${{ fromJSON(inputs.add_hash) }} ]]
+          then
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --auto
+          else
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
+          fi
+        fi      
       shell: bash        
 
     - name: Output Name
