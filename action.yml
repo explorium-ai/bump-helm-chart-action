@@ -14,10 +14,6 @@ inputs:
   chart-path:
     description: the directory path to the specified chart (without / at the end)
     required: true
-  add_hash:
-    description: to also add git commit hash as metadata
-    default: "false"
-    required: false
 outputs:
   chart:
     description: "Chart name"    
@@ -27,30 +23,18 @@ runs:
   steps:
     - name: Install PyBump
       run: |
-        python3 -m pip install pybump==1.8.1
+        python3 -m pip install pybump
       shell: bash
-
     - name: Automated Version Bump
       id: version-bump
       run: |
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
-          if [[ ${{ fromJSON(inputs.add_hash) }} ]]
-          then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version --auto
-          else
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
-          fi
+          pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
         else
-          if [[ ${{ fromJSON(inputs.add_hash) }} ]]
-          then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --auto
-          else
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
-          fi
-        fi      
+          pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
+        fi        
       shell: bash        
-
     - name: Output Name
       id: chart-name
       run: |
