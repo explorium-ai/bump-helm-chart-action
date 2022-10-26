@@ -27,7 +27,7 @@ runs:
   steps:
     - name: Install PyBump
       run: |
-        python3 -m pip install pybump
+        python3 -m pip install pybump==1.8.1
       shell: bash
 
     - name: Automated Version Bump
@@ -37,14 +37,14 @@ runs:
         then
           if [[ ${{ fromJSON(inputs.add_hash) }} ]]
           then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --auto
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version --auto
           else
             pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
           fi
         else
           if [[ ${{ fromJSON(inputs.add_hash) }} ]]
           then
-            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --auto
+            pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --auto
           else
             pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
           fi
