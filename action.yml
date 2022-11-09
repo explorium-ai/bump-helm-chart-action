@@ -31,9 +31,8 @@ runs:
         if [[ ${{ fromJSON(inputs.app_version) }} ]]
         then
           pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }} --app-version
-        else
-          pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
         fi        
+        pybump bump --file ${{ inputs.chart-path }}/Chart.yaml --level ${{ inputs.level }}
       shell: bash        
     - name: Output Name
       id: chart-name
